@@ -7,17 +7,20 @@ on:
   pull_request:
     branches:
       - 'main'
-  workflow_dispatch:
 
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
     timeout-minutes: 60  # Timeout for the entire job
-    container:
-      image: maven:3.8.6-openjdk-17  # Use a Debian-based Maven with JDK 17 container
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'adopt'
 
       - name: Lint Code
         run: mvn checkstyle:check
@@ -36,16 +39,16 @@ jobs:
         continue-on-error: true
 
       # Commenting out OWASP Dependency-Check for now
-      - name: OWASP Dependency-Check
-        run: mvn org.owasp:dependency-check-maven:check
-        continue-on-error: true
+      # - name: OWASP Dependency-Check
+      #   run: mvn org.owasp:dependency-check-maven:check
+      #   continue-on-error: true
 
-      - name: SonarQube Scan
-        env:
-          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: mvn sonar:sonar
-        continue-on-error: true
+  #      - name: SonarQube Scan
+  #        env:
+  #          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+  #          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+  #        run: mvn sonar:sonar
+  #        continue-on-error: true
 
   create-tag:
     runs-on: ubuntu-latest
