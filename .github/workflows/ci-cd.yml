@@ -7,20 +7,17 @@ on:
   pull_request:
     branches:
       - 'main'
+  workflow_dispatch:
 
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
     timeout-minutes: 60  # Timeout for the entire job
+    container:
+      image: maven:3.8.6-openjdk-17  # Use a Debian-based Maven with JDK 17 container
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-
-      - name: Set up JDK 17
-        uses: actions/setup-java@v3
-        with:
-          java-version: '17'
-          distribution: 'adopt'
 
       - name: Lint Code
         run: mvn checkstyle:check
@@ -43,16 +40,40 @@ jobs:
       #   run: mvn org.owasp:dependency-check-maven:check
       #   continue-on-error: true
 
-  #      - name: SonarQube Scan
-  #        env:
-  #          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-  #          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-  #        run: mvn sonar:sonar
-  #        continue-on-error: true
+      - name: SonarQube Scan
+        env:
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: mvn sonar:sonar
+        continue-on-error: true
+
+  build-and-push-docker:
+    runs-on: ubuntu-latest
+    needs: build-and-test
+    timeout-minutes: 60  # Timeout for the entire job
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build Docker image with Jib
+        run: mvn compile com.google.cloud.tools:jib-maven-plugin:3.2.1:build -Dimage=dockerhub.com/anmobor/toni:latest
+
+      - name: Push Docker image to Docker Hub
+        run: docker push dockerhub.com/anmobor/toni:latest
 
   create-tag:
     runs-on: ubuntu-latest
-    needs: build-and-test
+    needs: build-and-push-docker
+    if: success()
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -79,50 +100,28 @@ jobs:
 
       - name: Create and push new tag
         env:
-          GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git tag ${{ steps.bump_version.outputs.new_tag }}
-          git push https://${{ secrets.PERSONAL_ACCESS_TOKEN }}@github.com/${{ github.repository }}.git ${{ steps.bump_version.outputs.new_tag }}
-
-  build-and-push-docker:
-    runs-on: ubuntu-latest
-    needs: create-tag
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Login to Docker Hub
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-
-      - name: Build Docker image with Jib
-        run: mvn compile com.google.cloud.tools:jib-maven-plugin:3.2.1:build -Dimage=dockerhub.com/anmobor/toni:${{ needs.create-tag.outputs.new_tag }}
-        continue-on-error: true
-
-      - name: Push Docker image to Docker Hub
-        run: docker push dockerhub.com/anmobor/toni:${{ needs.create-tag.outputs.new_tag }}
+          git push https://${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git ${{ steps.bump_version.outputs.new_tag }}
 
   scan-and-tag-docker:
     runs-on: ubuntu-latest
     needs: build-and-push-docker
+    if: success()
     steps:
       - name: Checkout
         uses: actions/checkout@v3
 
       - name: Run Trivy Vulnerability Scanner
         run: |
-          docker pull dockerhub.com/anmobor/toni:${{ needs.create-tag.outputs.new_tag }}
-          docker run --rm aquasec/trivy:latest image --exit-code 1 --severity HIGH,CRITICAL dockerhub.com/anmobor/toni:${{ needs.create-tag.outputs.new_tag }}
+          docker pull dockerhub.com/anmobor/toni:latest
+          docker run --rm aquasec/trivy:latest image --exit-code 1 --severity HIGH,CRITICAL dockerhub.com/anmobor/toni:latest
         continue-on-error: true
 
       - name: Tag Docker Image with GitHub SHA
         run: |
-          docker tag dockerhub.com/anmobor/toni:${{ needs.create-tag.outputs.new_tag }} dockerhub.com/anmobor/toni:${{ github.sha }}
+          docker tag dockerhub.com/anmobor/toni:latest dockerhub.com/anmobor/toni:${{ github.sha }}
         continue-on-error: true
 
       - name: Push Docker Tag
@@ -132,7 +131,8 @@ jobs:
 
   trufflehog-scan:
     runs-on: ubuntu-latest
-    needs: build-and-test
+    needs: build-and-push-docker
+    if: success()
     timeout-minutes: 30  # Timeout for the entire job
     steps:
       - name: Checkout
