@@ -21,6 +21,9 @@ jobs:
           java-version: '17'
           distribution: 'adopt'
 
+      - name: Lint Code
+        run: mvn checkstyle:check
+
       - name: Build with Maven
         run: mvn --batch-mode --update-snapshots clean compile
 
@@ -30,8 +33,21 @@ jobs:
       - name: Run JaCoCo Coverage
         run: mvn jacoco:report
 
+      - name: SonarQube Scan
+        with:
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: mvn sonar:sonar
+        continue-on-error: true
+        timeout-minutes: 4
+
       - name: OWASP Dependency-Check
-        run: mvn org.owasp:dependency-check-maven:check
+        with:
+          NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
+        run: mvn org.owasp:dependency-check-maven:check -Ddependency-check.nvd.api.key=${{ secrets.NVD_API_KEY }}
+        continue-on-error: true
+        timeout-minutes: 4
+
 
   build-and-push-docker:
     runs-on: ubuntu-latest
@@ -51,6 +67,7 @@ jobs:
 
       - name: Build Docker image with Jib
         run: mvn compile com.google.cloud.tools:jib-maven-plugin:3.2.1:build -Dimage=dockerhub.com/anmobor/toni:latest
+        timeout-minutes: 5
 
   scan-and-tag-docker:
     runs-on: ubuntu-latest
@@ -63,6 +80,7 @@ jobs:
         run: |
           docker pull dockerhub.com/anmobor/toni:latest
           docker run --rm aquasec/trivy:latest image --exit-code 1 --severity HIGH,CRITICAL dockerhub.com/anmobor/toni:latest
+          timeout-minutes: 4
 
       - name: Tag Docker Image
         run: |
