@@ -43,12 +43,12 @@ jobs:
       #   run: mvn org.owasp:dependency-check-maven:check
       #   continue-on-error: true
 
-      - name: SonarQube Scan
-        env:
-          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: mvn sonar:sonar
-        continue-on-error: true
+#      - name: SonarQube Scan
+#        env:
+#          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+#          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+#        run: mvn sonar:sonar
+#        continue-on-error: true
 
   build-and-push-docker:
     runs-on: ubuntu-latest
