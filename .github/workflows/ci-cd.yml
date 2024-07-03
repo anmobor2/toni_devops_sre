@@ -35,10 +35,10 @@ jobs:
         run: mvn jacoco:report
 
       - name: SonarQube Scan
+        run: mvn sonar:sonar
         with:
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: mvn sonar:sonar
         continue-on-error: true
 
       - name: OWASP Dependency-Check
