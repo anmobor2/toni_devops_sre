@@ -157,7 +157,7 @@
                 <version>3.2.1</version>
                 <configuration>
                     <from>
-                        <image>gcr.io/distroless/java17-debian11</image>
+                        <image>gcr.io/distroless/eclipse-temurin:17-jdk</image>
                     </from>
                     <to>
                         <image>dockerhub.com/anmobor/toni</image>
