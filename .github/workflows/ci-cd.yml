@@ -13,8 +13,8 @@ jobs:
   build-and-test:
     runs-on: ubuntu-latest
     timeout-minutes: 60  # Timeout for the entire job
-#    container:
-#      image: maven:3.8.6-openjdk-17  # Use a Debian-based Maven with JDK 17 container
+    container:
+      image: 3.9.8-eclipse-temurin-17  # Use a Debian-based Maven with JDK 17 container
     steps:
       - name: Checkout
         uses: actions/checkout@v3
