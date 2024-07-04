@@ -87,10 +87,22 @@ jobs:
           docker pull docker.io/anmobor/toni:latest
           docker run --rm aquasec/trivy:latest image --exit-code 1 --severity HIGH,CRITICAL docker.io/anmobor/toni:latest
         continue-on-error: true
-      - name: Tag and push Docker Image
+
+      - name: Check if Docker image exists
+        id: check-image
         run: |
-          docker tag dockerhub.com/anmobor/toni:latest dockerhub.com/anmobor/toni:${{ github.sha }}
-          docker push dockerhub.com/anmobor/toni:${{ github.sha }}
+          image_exists=$(curl -s -H "Accept: application/vnd.docker.distribution.manifest.v2+json" -f https://docker.io/v2/anmobor/toni/manifests/latest 2>/dev/null | grep -c 'Docker-Content-Digest')
+          echo "::set-output name=exists::$image_exists"  
+
+      - name: Pull Docker image
+        if: steps.check-image.outputs.exists == '1'
+        run: docker pull docker.io/anmobor/toni:latest
+
+      - name: Build Docker image
+        if: steps.check-image.outputs.exists == '0'
+        run: |
+          docker build -t docker.io/anmobor/toni:latest .
+          docker push docker.io/anmobor/toni:latest
         continue-on-error: true
 
   trufflehog-scan: # Secrets Scanning
