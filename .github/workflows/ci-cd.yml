@@ -134,7 +134,7 @@ jobs:
 
   scan-and-tag-docker:
     runs-on: ubuntu-latest
-    needs: build-and-push-docker
+#    needs: build-and-push-docker
     if: success()
     steps:
       - name: Checkout
@@ -155,17 +155,19 @@ jobs:
         id: bump_version
         run: |
 #          echo "Old tag: ${{ steps.get_latest_tag.outputs.tag }}"
-          old_tag=${{ steps.get_latest_tag.outputs.tag }}
-          old_tag_number=$(echo $old_tag | sed 's/^v//')
-          new_tag=v$(echo $old_tag_number | awk -F. '{print $1 "." $2 "." $3+1}')
+
 #          echo "New tag: $new_tag"
 #          echo ::set-output name=new_tag::$new_tag
           docker tag docker.io/anmobor/toni:latest docker.io/anmobor/toni:$new_tag
           docker push docker.io/anmobor/toni:${new_tag}
 
       - name: Tag Docker Image with GitHub SHA
+        id: tag_docker_image
         run: |
-          docker tag docker.io/anmobor/toni:latest docker.io/anmobor/toni:${{ github.sha }}
+          old_tag=${{ steps.get_latest_tag.outputs.tag }}
+          old_tag_number=$(echo $old_tag | sed 's/^v//')
+          new_tag=v$(echo $old_tag_number | awk -F. '{print $1 "." $2 "." $3+1}')
+          docker tag docker.io/anmobor/toni:latest docker.io/anmobor/toni:$new_tag
 
         continue-on-error: true
 
@@ -177,9 +179,8 @@ jobs:
 
       - name: Push Docker Tag
         run: |
-          docker push docker.io/anmobor/toni:${{ github.sha }}
-#          docker tag docker.io/anmobor/toni:${{ github.sha }} docker.io/anmobor/toni:${{ needs.create-tag.outputs.new_tag }}
-#          docker push docker.io/anmobor/toni:${{ needs.create-tag.outputs.new_tag }}
+#          docker push docker.io/anmobor/toni:${{ github.sha }}
+          docker push docker.io/anmobor/toni:${{ steps.tag_docker_image.outputs.new_tag }}
         continue-on-error: true
 
   trufflehog-scan: # Secrets Scanning
