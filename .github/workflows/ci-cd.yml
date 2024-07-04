@@ -111,6 +111,8 @@ jobs:
           new_tag=v$(echo $old_tag_number | awk -F. '{print $1 "." $2 "." $3+1}')
           echo "New tag: $new_tag"
           echo ::set-output name=new_tag::$new_tag
+          docker tag docker.io/anmobor/toni:latest docker.io/anmobor/toni:$new_tag
+          docker push docker.io/anmobor/toni:${{ github.sha }}
 
 #      - name: Create and push new tag
 #        uses: actions-ecosystem/action-push-tag@v1
