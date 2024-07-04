@@ -94,7 +94,7 @@ jobs:
           old_tag=$latest_tag
           old_tag_number=$(echo $old_tag | sed 's/^v//')
           new_tag=v$(echo $old_tag_number | awk -F. '{print $1 "." $2 "." $3+1}')
-          echo "showing new tag $new_tag"
+          echo "showing new tag ${new_tag}"
           docker tag docker.io/anmobor/toni:latest docker.io/anmobor/toni:$new_tag
           echo "::set-output name=new_tag::$new_tag"
         continue-on-error: true
