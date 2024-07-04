@@ -113,7 +113,7 @@ jobs:
           echo ::set-output name=new_tag::$new_tag
 
       - name: Create and push new tag
-        uses: actions-ecosystem/action-push-tag@v3
+        uses: actions-ecosystem/action-push-tag@v2
         with:
           tag: ${{ steps.bump_version.outputs.new_tag }}
 #          tag: ${{ steps.bump-semver.outputs.new_version }}
