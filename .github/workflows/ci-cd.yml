@@ -105,8 +105,7 @@ jobs:
       - name: Push Docker Tag
         run: |
           echo "Using new tag ${{ steps.tagging.outputs.new_tag }}"
-          new_tag=$(echo ${{ steps.tagging.outputs.new_tag }})
-          docker push docker.io/anmobor/toni:$new_tag
+          docker push docker.io/anmobor/toni:${{ steps.tagging.outputs.new_tag }}
         continue-on-error: true
 
   trufflehog-scan: # Secrets Scanning
