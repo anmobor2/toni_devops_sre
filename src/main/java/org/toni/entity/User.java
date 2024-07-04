@@ -15,6 +15,9 @@ public class User {
     private String username;
     private LocalDate dateOfBirth;
 
+    /**
+     * Default constructor is needed for JPA
+     */
     public User() {
     }
 

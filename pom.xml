@@ -177,6 +177,9 @@
                             <LC_ALL>en_US.UTF-8</LC_ALL>
                         </environment>
                     </container>
+                    <configuration>
+                        <propertyFile>${project.basedir}/.mvn/jib-exclude.config</propertyFile>
+                    </configuration>
                 </configuration>
             </plugin>
         </plugins>
