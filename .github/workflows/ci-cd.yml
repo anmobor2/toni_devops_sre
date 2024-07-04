@@ -110,7 +110,6 @@ jobs:
 
       - name: Push Docker Tag
         run: |
-#          docker push docker.io/anmobor/toni:${{ github.sha }}
           docker push docker.io/anmobor/toni:${{ steps.tag_docker_image.outputs.new_tag }}
         continue-on-error: true
 
