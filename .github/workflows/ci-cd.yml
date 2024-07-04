@@ -12,10 +12,9 @@ on:
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
-    timeout-minutes: 8  # Timeout for the entire job
+    timeout-minutes: 60  # Timeout for the entire job
     container:
-#      image: eclipse-temurin:17-jdk
-      image: maven:3.8.3-openjdk-17
+      image: eclipse-temurin:17-jdk
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -27,37 +26,37 @@ jobs:
           java-version: '17'
 
       - name: Lint Code
-        run: mvn checkstyle:check
+        run: ./mvnw checkstyle:check
         continue-on-error: true
 
       - name: Build with Maven
-        run: mvn --batch-mode --update-snapshots clean compile
+        run: ./mvnw --batch-mode --update-snapshots clean compile
         continue-on-error: true
 
       - name: Run tests with Maven
-        run: mvn --batch-mode verify
+        run: ./mvnw --batch-mode verify
         continue-on-error: true
 
       - name: Run JaCoCo Coverage
-        run: mvn jacoco:report
+        run: ./mvnw jacoco:report
         continue-on-error: true
 
       # Commenting out OWASP Dependency-Check for now
       # - name: OWASP Dependency-Check
-      #   run: mvn org.owasp:dependency-check-maven:check
+      #   run: ./mvnw org.owasp:dependency-check-maven:check
       #   continue-on-error: true
 
       - name: SonarQube Scan
         env:
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: mvn sonar:sonar
+        run: ./mvnw sonar:sonar
         continue-on-error: true
 
   build-and-push-docker:
     runs-on: ubuntu-latest
     needs: [build-and-test]
-    timeout-minutes: 4  # Timeout for the entire job
+    timeout-minutes: 60  # Timeout for the entire job
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -75,11 +74,9 @@ jobs:
           java-version: '17'
 
       - name: Build Docker image with Jib
-        run:
-          mvn compile com.google.cloud.tools:jib-maven-plugin:3.2.1:build -Dimage=docker.io/anmobor/toni:latest
+        run: ./mvnw compile com.google.cloud.tools:jib-maven-plugin:3.2.1:build -Dimage=docker.io/anmobor/toni:latest
 
   scan-and-tag-docker:
-    timeout-minutes: 4
     runs-on: ubuntu-latest
     needs: build-and-push-docker
     if: success()
@@ -94,14 +91,12 @@ jobs:
         continue-on-error: true
 
       - name: Tag Docker Image with GitHub SHA
-#        id: tag_docker_image
         run: |
           latest_tag=$(git describe --tags `git rev-list --tags --max-count=1`)
           old_tag=$latest_tag
           old_tag_number=$(echo $old_tag | sed 's/^v//')
           new_tag=v$(echo $old_tag_number | awk -F. '{print $1 "." $2 "." $3+1}')
           docker tag docker.io/anmobor/toni:latest docker.io/anmobor/toni:$new_tag
-          docker push docker.io/anmobor/toni:$new_tag
         continue-on-error: true
 
       - name: Login to Docker Hub
@@ -119,7 +114,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: scan-and-tag-docker
     if: success()
-    timeout-minutes: 5  # Timeout for the entire job
+    timeout-minutes: 30  # Timeout for the entire job
     steps:
       - name: Checkout
         uses: actions/checkout@v3
