@@ -87,12 +87,9 @@ jobs:
           docker pull docker.io/anmobor/toni:latest
           docker run --rm aquasec/trivy:latest image --exit-code 1 --severity HIGH,CRITICAL docker.io/anmobor/toni:latest
         continue-on-error: true
-      - name: Tag Docker Image
+      - name: Tag and push Docker Image
         run: |
           docker tag dockerhub.com/anmobor/toni:latest dockerhub.com/anmobor/toni:${{ github.sha }}
-
-      - name: Push Docker Tag
-        run: |
           docker push dockerhub.com/anmobor/toni:${{ github.sha }}
         continue-on-error: true
 
