@@ -154,7 +154,7 @@ jobs:
       - name: Bump the version
         id: bump_version
         run: |
-          echo "Old tag: ${{ steps.get_latest_tag.outputs.tag }}"
+#          echo "Old tag: ${{ steps.get_latest_tag.outputs.tag }}"
           old_tag=${{ steps.get_latest_tag.outputs.tag }}
           old_tag_number=$(echo $old_tag | sed 's/^v//')
           new_tag=v$(echo $old_tag_number | awk -F. '{print $1 "." $2 "." $3+1}')
