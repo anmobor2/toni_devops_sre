@@ -150,7 +150,7 @@ jobs:
         id: get_latest_tag
         run: |
           latest_tag=$(git describe --tags `git rev-list --tags --max-count=1`)
-          echo ::set-output name=tag::${latest_tag}
+#          echo ::set-output name=tag::${latest_tag}
 
       - name: Bump the version
         id: bump_version
