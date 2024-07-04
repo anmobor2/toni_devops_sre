@@ -150,7 +150,6 @@ jobs:
         id: get_latest_tag
         run: |
           latest_tag=$(git describe --tags `git rev-list --tags --max-count=1`)
-#          echo ::set-output name=tag::${latest_tag}
 
       - name: Bump the version
         id: bump_version
@@ -162,7 +161,7 @@ jobs:
 #          echo "New tag: $new_tag"
 #          echo ::set-output name=new_tag::$new_tag
           docker tag docker.io/anmobor/toni:latest docker.io/anmobor/toni:${new_tag}
-          docker push docker.io/anmobor/toni:${{ github.sha }}
+          docker push docker.io/anmobor/toni:${new_tag}
 
       - name: Tag Docker Image with GitHub SHA
         run: |
