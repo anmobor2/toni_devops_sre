@@ -94,7 +94,7 @@ jobs:
           old_tag=$latest_tag
           old_tag_number=$(echo $old_tag | sed 's/^v//')
           new_tag=v$(echo $old_tag_number | awk -F. '{print $1 "." $2 "." $3+1}')
-          docker tag docker.io/anmobor/toni:latest docker.io/anmobor/toni:$new_tag
+          docker tag docker.io/anmobor/toni:latest docker.io/anmobor/toni:${new_tag}
           echo "::set-output name=new_tag::$new_tag"
         continue-on-error: true
       - name: Login to Docker Hub
@@ -105,7 +105,7 @@ jobs:
       - name: Push Docker Tag
         run: |
           new_tag=$(echo ${{ steps.tagging.outputs.new_tag }})
-          docker push docker.io/anmobor/toni:$new_tag
+          docker push docker.io/anmobor/toni:${new_tag}
         continue-on-error: true
 
   trufflehog-scan: # Secrets Scanning
