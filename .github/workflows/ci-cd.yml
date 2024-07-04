@@ -91,6 +91,7 @@ jobs:
         continue-on-error: true
 
       - name: Tag Docker Image with GitHub SHA
+        id: tagging
         run: |
           latest_tag=$(git describe --tags `git rev-list --tags --max-count=1`)
           old_tag=$latest_tag
@@ -107,7 +108,7 @@ jobs:
 
       - name: Push Docker Tag
         run: |
-          docker push docker.io/anmobor/toni:$new_tag
+          docker push docker.io/anmobor/toni:${{ steps.tagging.outputs.new_tag }}
         continue-on-error: true
 
   trufflehog-scan: # Secrets Scanning
