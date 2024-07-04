@@ -104,7 +104,8 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: Push Docker Tag
         run: |
-          docker push docker.io/anmobor/toni:${{ steps.tagging.outputs.new_tag }}
+          new_tag=$(echo ${{ steps.tagging.outputs.new_tag }})
+          docker push docker.io/anmobor/toni:$new_tag
         continue-on-error: true
 
   trufflehog-scan: # Secrets Scanning
