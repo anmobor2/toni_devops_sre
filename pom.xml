@@ -18,6 +18,9 @@
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <sonar.projectKey>anmobor2_toni_devops_sre</sonar.projectKey>
+        <sonar.organization>anmobor2</sonar.organization>
+        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
     </properties>
 
     <dependencyManagement>
@@ -177,10 +180,12 @@
                             <LC_ALL>en_US.UTF-8</LC_ALL>
                         </environment>
                     </container>
-                    <configuration>
-                        <propertyFile>${project.basedir}/.mvn/jib-exclude.config</propertyFile>
-                    </configuration>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.sonarsource.scanner.maven</groupId>
+                <artifactId>sonar-maven-plugin</artifactId>
+                <version>4.0.0.4121</version>
             </plugin>
         </plugins>
     </build>
