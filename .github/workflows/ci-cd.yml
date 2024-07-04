@@ -113,8 +113,10 @@ jobs:
           echo ::set-output name=new_tag::$new_tag
 
       - name: Create and push new tag
-        uses: actions-ecosystem/action-push-tag@v2
+        uses: actions-ecosystem/action-push-tag@v1
+        if: ${{ steps.bump_version.outputs.new_tag != null }}
         with:
+          github_token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
           tag: ${{ steps.bump_version.outputs.new_tag }}
 #          tag: ${{ steps.bump-semver.outputs.new_version }}
           message: "Bump version to ${{ steps.bump_version.outputs.new_tag }}"
