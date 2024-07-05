@@ -1,21 +1,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "python-http-server.fullname" . }}
-  namespace: {{ include "python-http-server.namespace" . }}
+  name: {{ include "hello-world.fullname" . }}
+  namespace: {{ include "hello-world.namespace" . }}
   labels:
-    {{- include "python-http-server.labels" . | nindent 4 }}
+    {{- include "hello-world.labels" . | nindent 4 }}
 spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
   {{- end }}
   selector:
     matchLabels:
-      {{- include "python-http-server.selectorLabels" . | nindent 6 }}
+      {{- include "hello-world.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
-        {{- include "python-http-server.labels" . | nindent 8 }}
+        {{- include "hello-world.labels" . | nindent 8 }}
         {{- with .Values.podLabels }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
@@ -24,7 +24,7 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
     spec:
-      serviceAccountName: {{ include "python-http-server.serviceAccountName" . }}
+      serviceAccountName: {{ include "hello-world.serviceAccountName" . }}
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}

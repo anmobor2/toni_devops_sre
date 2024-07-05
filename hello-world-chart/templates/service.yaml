@@ -1,12 +1,12 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "python-http-server.fullname" . }}
+  name: {{ include "hello-world.fullname" . }}
   namespace: {{ .Values.namespace }}
   labels:
-    {{- include "python-http-server.labels" . | nindent 4 }}
+    {{- include "hello-world.labels" . | nindent 4 }}
     app.kubernetes.io/name: {{ .Chart.Name }}
-    helm.sh/chart: {{ include "python-http-server.chart" . }}-{{ .Chart.Version }}
+    helm.sh/chart: {{ include "hello-world.chart" . }}-{{ .Chart.Version }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
@@ -17,5 +17,5 @@ spec:
       protocol: TCP
       name: http
   selector:
-    {{- include "python-http-server.selectorLabels" . | nindent 4 }}
+    {{- include "hello-world.selectorLabels" . | nindent 4 }}
 

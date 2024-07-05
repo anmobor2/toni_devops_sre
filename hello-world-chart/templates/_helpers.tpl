@@ -1,12 +1,12 @@
 {{/*
 Expand the name of the chart. Helpers are used to simplify the templates, and to allow for reuse of common logic like lables and names
 */}}
-{{- define "python-http-server.name" -}}
+{{- define "hello-world.name" -}}
 {{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
 
-{{- define "python-http-server.fullname" -}}
+{{- define "hello-world.fullname" -}}
 {{- if .Values.fullnameOverride }}
 {{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" }}
 {{- else }}
@@ -22,40 +22,40 @@ Expand the name of the chart. Helpers are used to simplify the templates, and to
 {{/*
 Create chart name and version as used by the chart label.
 */}}
-{{- define "python-http-server.chart" -}}
+{{- define "hello-world.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
 {{/*
 Common labels
 */}}
-{{- define "python-http-server.labels" -}}
-helm.sh/chart: {{ include "python-http-server.chart" . }}
-{{ include "python-http-server.selectorLabels" . }}
+{{- define "hello-world.labels" -}}
+helm.sh/chart: {{ include "hello-world.chart" . }}
+{{ include "hello-world.selectorLabels" . }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end }}
 
-{{- define "python-http-server.namespace" -}}
+{{- define "hello-world.namespace" -}}
 {{- .Values.namespace }}
 {{- end }}
 
 {{/*
 Selector labels
 */}}
-{{- define "python-http-server.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "python-http-server.name" . }}
+{{- define "hello-world.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "hello-world.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
 {{/*
 Create the name of the service account to use
 */}}
-{{- define "python-http-server.serviceAccountName" -}}
+{{- define "hello-world.serviceAccountName" -}}
 {{- if .Values.serviceAccount.create }}
-{{- default (include "python-http-server.fullname" .) .Values.serviceAccount.name }}
+{{- default (include "hello-world.fullname" .) .Values.serviceAccount.name }}
 {{- else }}
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}
