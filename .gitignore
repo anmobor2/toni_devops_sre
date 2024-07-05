@@ -40,3 +40,10 @@ build/
 .idea
 .idea
 /.sonarlint/
+
+### terraform 
+toni/terraform/environments_main-infra/test/.terraform
+terraform/environments_main-infra/test/.terraform
+environments_main-infra/test/.terraform
+test/.terraform
+.terraform
