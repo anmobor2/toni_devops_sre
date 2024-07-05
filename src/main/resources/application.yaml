@@ -1,11 +1,12 @@
 server:
   port: 8080
 
+# this can be rewritten to use a secret manager for environment
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3306/mydatabase
-    username: admin
-    password: YourSecurePassword123
+    url: jdbc:mysql://${DB_HOST:localhost}:3306/mydatabase
+    username: ${DB_USERNAME:admin}
+    password: ${DB_PASSWORD:YourSecurePassword123}
   jpa:
     hibernate:
       ddl-auto: update
