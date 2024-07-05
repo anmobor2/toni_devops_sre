@@ -8,5 +8,8 @@ mvn spring-boot:run
 curl -X PUT http://localhost:8080/hello/paco -H "Content-Type: application/json" -d '{"dateOfBirth": "2020-11-26"}'
 curl -X GET http://localhost:8080/hello/paco
 
+This contains the Java app, and the helm chart, and produces a docker image for the helm chart to run in Kubernetes or 
+to run alone or in a deployment.
+
 The second project is the zproject_toni, that contains the AWS infrastructure for the project, and when you run this
 docker or the helmchart, you need the database that zproject_toni raises.
