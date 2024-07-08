@@ -40,7 +40,7 @@ variable "vpc_tags" {
   type        = map(string)
   default = {
     Terraform   = "true"
-    Environment = "project_intely"
+    Environment = "hello-world"
   }
 }
 
@@ -118,7 +118,7 @@ variable "protocol_http_version" {
 variable "alb_security_group_name" {
   description = "Name of the ALB security group"
   type        = string
-  default     = "project_intely-alb-sg"
+  default     = "hello-world-alb-sg"
 }
 
 variable "alb_security_group_description" {
@@ -194,7 +194,7 @@ variable "alb_security_group_tags" {
   type        = map(string)
   default = {
     Terraform   = "true"
-    Environment = "project_intely"
+    Environment = "hello-world"
   }
 }
 
@@ -270,9 +270,9 @@ variable "launch_template_tags" {
   description = "Tags to apply to the launch template"
   type        = map(string)
   default = {
-    Name        = "project_intely-web-server"
+    Name        = "hello-world"
     Terraform   = "true"
-    Environment = "project_intely"
+    Environment = "hello-world"
   }
 }
 
@@ -348,7 +348,7 @@ variable "target_group_protocol" {
 variable "target_group_name" {
   description = "target group name"
   type        = string
-  default     = "project-intely-tg"
+  default     = "hello-world-tg"
 }
 
 variable "create_attachment" {
@@ -436,7 +436,7 @@ variable "security_group_tags" {
   description = "Tags for the security group"
   type        = map(string)
   default = {
-    Environment = "project_intely"
+    Environment = "hello-world"
   }
 }
 
@@ -481,7 +481,7 @@ variable "autoscaling_ingress_cidr_blocks" {
 variable "instance_tag_name" {
   description = "The name tag for the instances"
   type        = string
-  default     = "project_intely"
+  default     = "hello-world"
 }
 
 variable "security_group_ingress_rules" {

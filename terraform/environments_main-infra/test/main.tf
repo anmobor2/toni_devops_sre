@@ -13,6 +13,20 @@ resource "aws_security_group" "alb_sg" {
   }
 
   ingress {
+    from_port   = 8080
+    to_port     = 8080
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
     description      = "Allow https request from anywhere"
     protocol         = "tcp"
     from_port        = 443
@@ -40,6 +54,13 @@ resource "aws_security_group" "ec2_sg" {
   description = "Security Group for Web Server Instances"
 
   vpc_id = aws_vpc.toni_vpc.id
+
+  ingress {
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
 
   ingress {
     from_port       = 0
@@ -72,7 +93,7 @@ resource "aws_lb" "app_lb" {
 
 # Target Group for ALB
 resource "aws_lb_target_group" "alb_ec2_tg" {
-  name     = "web-server-tg"
+  name     = "hello-world-tg"
   port     = 80
   protocol = "HTTP"
   vpc_id   = aws_vpc.toni_vpc.id
@@ -96,29 +117,29 @@ resource "aws_lb_listener" "alb_listener" {
 
 #3. Launch Template for EC2 Instances
 resource "aws_launch_template" "ec2_launch_template" {
-  name = "web-server"
+  name = "hello-world-launch-template"
 
   image_id      = "ami-0c0e147c706360bd7" //Copy the ami id from aws console
   instance_type = "t3.micro"
 
   network_interfaces {
-    associate_public_ip_address = false
+    associate_public_ip_address = true
     security_groups             = [aws_security_group.ec2_sg.id]
   }
-
+#  key_name = key-0ed3f1526e9d24120
   user_data = base64encode(file("user_data.sh"))
 
   tag_specifications {
     resource_type = "instance"
     tags = {
-      Name = "ec2-web-server"
+      Name = "ec2-hello-world"
     }
   }
 }
 
 # Auto Scaling Group
 resource "aws_autoscaling_group" "ec2_asg" {
-  name                = "web-server-asg"
+  name                = "hello-world-asg"
   desired_capacity    = 2
   min_size            = 1
   max_size            = 3

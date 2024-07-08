@@ -7,6 +7,9 @@ spring:
     url: jdbc:mysql://${DB_HOST:localhost}:3306/mydatabase
     username: ${DB_USERNAME:admin}
     password: ${DB_PASSWORD:YourSecurePassword123}
+    admin-username: ${DB_ADMIN_USERNAME:admin}
+    admin-password: ${DB_ADMIN_PASSWORD:YourSecureAdminPassword123}
+
   jpa:
     hibernate:
       ddl-auto: update
