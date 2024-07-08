@@ -4,6 +4,7 @@ minikube start
 
 ## First:
 helm repo add bitnami https://charts.bitnami.com/bitnami
+helm install hello-world-chart ./hello-world-chart -f hello-world-chart/values.yaml --namespace hello-world --create-namespace
 kubectl apply -f hello-worls-chart/namespace.yaml
 cd hello-worls-chart
 

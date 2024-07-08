@@ -9,6 +9,9 @@ spring:
     password: ${DB_PASSWORD:YourSecurePassword123}
     admin-username: ${DB_ADMIN_USERNAME:admin}
     admin-password: ${DB_ADMIN_PASSWORD:YourSecureAdminPassword123}
+    mysql-root-username: ${DB_ADMIN_USERNAME:root}
+    MYSQL_ROOT_PASSWORD: ${DB_ADMIN_PASSWORD:YourSecureAdminPassword123}
+    mysql_root_password: ${DB_ADMIN_PASSWORD:YourSecureAdminPassword123}
 
   jpa:
     hibernate:

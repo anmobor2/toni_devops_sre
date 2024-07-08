@@ -68,3 +68,5 @@ env:
   DB_HOST: hello-world-chart-mysql.default.svc.cluster.local
   DB_USERNAME: admin
   DB_PASSWORD: YourSecurePassword123
+  DB_ADMIN_USERNAME: admin
+  DB_ADMIN_PASSWORD: YourSecureAdminPassword123
