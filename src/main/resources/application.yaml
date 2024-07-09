@@ -4,6 +4,7 @@ server:
 # this can be rewritten to use a secret manager for environment
 spring:
   datasource:
+    MYSQL_DATABASE: mydatabase
     url: jdbc:mysql://${DB_HOST:localhost}:3306/mydatabase
     username: ${DB_USERNAME:admin}
     password: ${DB_PASSWORD:YourSecurePassword123}
