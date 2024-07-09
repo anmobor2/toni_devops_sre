@@ -24,7 +24,6 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
     spec:
-
       serviceAccountName: {{ include "hello-world.serviceAccountName" . }}
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
@@ -47,6 +46,10 @@ spec:
               value: {{ .Values.env.DB_USERNAME }}
             - name: DB_PASSWORD
               value: {{ .Values.env.DB_PASSWORD }}
+            - name: DB_ADMIN_USERNAME
+              value: {{ .Values.env.DB_ADMIN_USERNAME }}
+            - name: DB_ADMIN_PASSWORD
+              value: {{ .Values.env.DB_ADMIN_PASSWORD }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           livenessProbe:

@@ -30,7 +30,7 @@ service:
   port: 8080
 
 livenessProbe:
-  path: "/actuator/health/liveness"
+  path: "/health/liveness"
   port: 8080
   initialDelaySeconds: 60
   periodSeconds: 10
@@ -39,7 +39,7 @@ livenessProbe:
   successThreshold: 1
 
 readinessProbe:
-  path: "/actuator/health/readiness"
+  path: "/health/readiness"
   port: 8080
   initialDelaySeconds: 30
   periodSeconds: 10
@@ -65,7 +65,8 @@ mysql:
       port: 3306
 
 env:
-  DB_HOST: hello-world-chart-mysql.default.svc.cluster.local
+  DB_HOST: hello-world-chart-mysql.hello-world.svc.cluster.local
+#  DB_HOST: hello-world-chart-mysql
   DB_USERNAME: admin
   DB_PASSWORD: YourSecurePassword123
   DB_ADMIN_USERNAME: admin

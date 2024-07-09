@@ -18,4 +18,3 @@ spec:
       name: http
   selector:
     {{- include "hello-world.selectorLabels" . | nindent 4 }}
-
