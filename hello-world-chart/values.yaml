@@ -12,6 +12,12 @@ serviceAccount:
   automount: true
   name: "hello-world-sac"
 
+deployment:
+  annotations: []
+
+rbac:
+  create: true
+
 securityContext: {}
 
 ingress:
@@ -30,19 +36,19 @@ service:
   port: 8080
 
 livenessProbe:
-  path: "/health/liveness"
+  path: /health
   port: 8080
-  initialDelaySeconds: 60
-  periodSeconds: 10
   timeoutSeconds: 5
-  failureThreshold: 3
+  periodSeconds: 5
+  failureThreshold: 20
+  initialDelaySeconds: 120
   successThreshold: 1
 
 readinessProbe:
-  path: "/health/readiness"
+  path: /health
   port: 8080
-  initialDelaySeconds: 30
-  periodSeconds: 10
+  initialDelaySeconds: 20
+  periodSeconds: 7
   timeoutSeconds: 5
   failureThreshold: 3
   successThreshold: 1
@@ -65,9 +71,18 @@ mysql:
       port: 3306
 
 env:
-  DB_HOST: hello-world-chart-mysql.hello-world.svc.cluster.local
-#  DB_HOST: hello-world-chart-mysql
+#  DB_HOST: hello-world-chart-mysql.hello-world.svc.cluster.local
+  DB_HOST: hello-world-chart-mysql
   DB_USERNAME: admin
   DB_PASSWORD: YourSecurePassword123
   DB_ADMIN_USERNAME: admin
   DB_ADMIN_PASSWORD: YourSecureAdminPassword123
+
+metrics:
+  enabled: true
+  serviceMonitor:
+    enabled: false
+    namespace: ~
+    additionalLabels: { }
+    scrapeInterval: 10s
+    honorLabels: false

@@ -1,0 +1,45 @@
+{{- if .Values.rbac.create -}}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: {{ template "chart.fullname" . }}
+  labels:
+{{ include "chart.labels" . | indent 4 }}
+rules:
+- apiGroups:
+  - ""
+  - extensions
+  - apps
+  resources:
+  - pods
+  - services
+  - endpoints
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - ""
+  resources:
+  - configmaps
+  resourceNames:
+  - {{ template "chart.fullname" . }}
+  - {{ template "chart.fullname" . }}-kubernetes
+  {{- range .Values.loadConfigMaps }}
+  - {{ . }}
+  {{- end }}
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - ""
+  resources:
+  - secrets
+  resourceNames:
+  - {{ template "chart.fullname" . }}
+  verbs:
+  - get
+  - list
+  - watch
+{{- end }}
