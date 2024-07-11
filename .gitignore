@@ -40,6 +40,7 @@ build/
 .idea
 .idea
 /.sonarlint/
+.idea/misc.xml
 
 ### terraform 
 toni/terraform/environments_main-infra/test/.terraform
