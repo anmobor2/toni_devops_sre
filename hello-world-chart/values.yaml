@@ -20,6 +20,10 @@ rbac:
 
 securityContext: {}
 
+service:
+  type: ClusterIP
+  port: 8080
+
 ingress:
   enabled: true
   className: nginx
@@ -30,10 +34,6 @@ ingress:
       paths:
         - path: /
           pathType: ImplementationSpecific
-
-service:
-  type: ClusterIP
-  port: 8080
 
 livenessProbe:
   path: /health
@@ -71,8 +71,8 @@ mysql:
       port: 3306
 
 env:
-#  DB_HOST: hello-world-chart-mysql.hello-world.svc.cluster.local
-  DB_HOST: hello-world-chart-mysql
+  DB_HOST: hello-world-chart-mysql.hello-world.svc.cluster.local
+#  DB_HOST: hello-world-chart-mysql
   DB_USERNAME: admin
   DB_PASSWORD: YourSecurePassword123
   DB_ADMIN_USERNAME: admin

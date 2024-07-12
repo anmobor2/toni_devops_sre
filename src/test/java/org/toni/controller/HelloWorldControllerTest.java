@@ -1,9 +1,11 @@
 package org.toni.controller;
 
 import org.toni.entity.User;
+import org.toni.service.DateService;
 import org.toni.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.ResponseEntity;
@@ -24,12 +26,15 @@ class HelloWorldControllerTest {
     @Mock
     private UserService userService;
 
+    @Mock
+    private DateService dateService;
+
+    @InjectMocks
     private HelloWorldController helloWorldController;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        helloWorldController = new HelloWorldController(userService);
     }
 
     @Test
@@ -54,6 +59,7 @@ class HelloWorldControllerTest {
         User user = new User("testUser", LocalDate.now().minusYears(20));
 
         when(userService.findUserByUsername("testUser")).thenReturn(Optional.of(user));
+        when(dateService.getDaysUntilNextBirthday(user.getDateOfBirth())).thenReturn(365L);
 
         ResponseEntity<Map<String, String>> responseEntity = helloWorldController.getHelloMessage("testUser");
 

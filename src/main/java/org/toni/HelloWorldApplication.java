@@ -3,15 +3,12 @@ package org.toni;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Profile;
+
 import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
 import java.sql.SQLException;
 
-
-/**
- * The HelloWorldApplication class implements an application that
- * simply starts the Spring Boot application.
- */
 @SpringBootApplication
 public class HelloWorldApplication {
     @Autowired
@@ -21,6 +18,7 @@ public class HelloWorldApplication {
         SpringApplication.run(HelloWorldApplication.class, args);
     }
 
+    @Profile("!test")
     @PostConstruct
     public void printDatasourceConfig() {
         try {
@@ -30,5 +28,4 @@ public class HelloWorldApplication {
             e.printStackTrace();
         }
     }
-
 }

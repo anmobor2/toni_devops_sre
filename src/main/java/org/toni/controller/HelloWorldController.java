@@ -1,12 +1,12 @@
 package org.toni.controller;
 
 import org.toni.entity.User;
+import org.toni.service.DateService;
 import org.toni.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -16,9 +16,11 @@ import java.util.regex.Pattern;
 @RequestMapping("/hello")
 public class HelloWorldController {
     private final UserService userService;
+    private final DateService dateService;
 
-    public HelloWorldController(UserService userService) {
+    public HelloWorldController(UserService userService, DateService dateService) {
         this.userService = userService;
+        this.dateService = dateService;
     }
 
     @PutMapping("/{username}")
@@ -52,12 +54,7 @@ public class HelloWorldController {
         }
         User user = userOptional.get();
 
-        LocalDate today = LocalDate.now();
-        LocalDate nextBirthday = user.getDateOfBirth().withYear(today.getYear());
-        if (nextBirthday.isBefore(today) || nextBirthday.isEqual(today)) {
-            nextBirthday = nextBirthday.plusYears(1);
-        }
-        long daysUntilBirthday = ChronoUnit.DAYS.between(today, nextBirthday);
+        long daysUntilBirthday = dateService.getDaysUntilNextBirthday(user.getDateOfBirth());
 
         String message;
         if (daysUntilBirthday == 0) {
