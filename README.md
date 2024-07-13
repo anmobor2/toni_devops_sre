@@ -15,3 +15,6 @@ TERRAFORM
 To apply terraform you have to go to:
 toni/terraform/environments_main-infra/test
 terraform init ... apply
+
+to run the tests with the database in memory, run this command :
+mvn test -Dspring.profiles.active=test
